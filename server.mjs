@@ -1,8 +1,9 @@
 import express from 'express';
-import axios from 'axios';
 import dotenv from 'dotenv';
 import { Server } from 'socket.io';
 import http from 'http';
+import authRoutes from './Routes/AuthRoutes.js';
+import userRoutes from './Routes/UserRoutes.js';
 
 dotenv.config(); // load up the environment variables
 
@@ -17,24 +18,8 @@ app.get('/', (req, res) => {
     res.send('Hello, Node.js server!');
 });
 
-app.get('/data', async (req, res) => {
-    try {
-        // Make a GET request to an external API
-        const response = await axios.get('https://jsonplaceholder.typicode.com/posts/1');
-
-        // Send the response data to the client
-        res.json({
-            message: 'Data fetched successfully!',
-            data: response.data
-        });
-    } catch (error) {
-        console.error('Error fetching data:', error.message);
-        res.status(500).json({
-            message: 'Failed to fetch data',
-            error: error.message
-        });
-    }
-});
+app.use('/authentication', authRoutes);
+app.use('/users', userRoutes);
 
 const allowedOrigins = [
     /^http:\/\/localhost(:\d+)?$/ //temporarily allow all ports on localhost
