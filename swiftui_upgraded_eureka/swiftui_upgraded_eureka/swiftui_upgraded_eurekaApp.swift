@@ -25,7 +25,7 @@ struct swiftui_upgraded_eurekaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NewAccountView()
         }
         .modelContainer(sharedModelContainer)
     }

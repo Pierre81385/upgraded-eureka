@@ -1,13 +1,13 @@
 const router = require("express").Router();
-const firebase = require('../firebase.js')
+const admin = require('../firebase_admin');
+const firestore = admin.firestore();
 
 router.route('/create/:id').post( async (req, res) => {
 
     const id = req.params.id;
     const { displayName, email, profileImg } = req.body;
-    const db = firebase.firestore();
 
-    db.collection("users").doc(id).set({
+    firestore.collection("users").doc(id).set({
         displayName: displayName,
         email: email,
         profileImg: profileImg,
@@ -24,9 +24,8 @@ router.route('/create/:id').post( async (req, res) => {
 router.route('/update/:id').post( async (req, res) => {
     const id = req.params.id;
     const { displayName, email, profileImg } = req.body;
-    const db = firebase.firestore();
 
-    db.collection("users").doc(id).set({
+    firestore.collection("users").doc(id).set({
         displayName: displayName,
         email: email,
         profileImg: profileImg,
@@ -41,9 +40,8 @@ router.route('/update/:id').post( async (req, res) => {
 });
 
 router.route('/read_all').post( async (req, res) => {
-    const db = firebase.firestore();
 
-    db.collection("users").get().then((querySnapshot) => {
+    firestore.collection("users").get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
             var docs = [];
             docs.push(doc.data());
@@ -56,8 +54,7 @@ router.route('/read_all').post( async (req, res) => {
 router.route('/read_one/:id').post( async (req, res) => {
     
     const id = req.params.id;
-    const db = firebase.firestore();
-    var docRef = db.collection("users").doc(id);
+    var docRef = firestore.collection("users").doc(id);
 
 docRef.get().then((doc) => {
     if (doc.exists) {
@@ -73,9 +70,8 @@ docRef.get().then((doc) => {
 router.route('/delete/:id').post( async (req, res) => {
     
     const id = req.params.id;
-    const db = firebase.firestore();
 
-    db.collection("users").doc(id).delete().then(() => {
+    firestore.collection("users").doc(id).delete().then(() => {
         res.status(200).json({ message: "Document deleted." });
     }).catch((error) => {
         res.status(400).json({ code: error.code, error: error.message });
